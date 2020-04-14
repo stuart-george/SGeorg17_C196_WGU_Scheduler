@@ -1,5 +1,7 @@
 package edu.wgu.sgeor17.wguscheduler.ui.main;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -11,28 +13,44 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import edu.wgu.sgeor17.wguscheduler.R;
+import edu.wgu.sgeor17.wguscheduler.ui.term.TermActivity;
 
 public class MainActivity extends AppCompatActivity {
+    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
+        setButtonClickActions();
+
+    }
+
+    private void setButtonClickActions() {
+        Button termButton = findViewById(R.id.main_term_button);
+        termButton.setOnClickListener((view) -> {
+            Intent intent = new Intent(MainActivity.this, TermActivity.class);
+            startActivity(intent);
+        });
+
+        Button courseButton = findViewById(R.id.main_course_button);
+        courseButton.setOnClickListener((view) -> {
+            // TODO: 4/5/2020 Need to implement transition to Course List
+        });
+        Button assessmentButton = findViewById(R.id.main_assessment_button);
+        assessmentButton.setOnClickListener((view) -> {
+            // TODO: 4/5/2020 Need to implement transition to Assessment list
         });
     }
 
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -53,5 +71,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }*/
+
+    public static Context getContext() {
+        return context;
     }
 }

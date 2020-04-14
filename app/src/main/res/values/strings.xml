@@ -1,12 +1,54 @@
 <resources>
-    <string name="app_name">SGeorg17 C196 WGU Scheduler</string>
+    <string name="app_name">WGU Scheduler</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <!--    Page Labels-->
+    <string name="title_activity_term">Term List</string>
+    <string name="title_activity_term_detail">TermDetailActivity</string>
+
+    <!--    Course Status Labels-->
+    <string name="course_status_in_progress">In Progress</string>
+    <string name="course_status_completed">Completed</string>
+    <string name="course_status_dropped">Dropped</string>
+    <string name="course_status_planned">Pan to Take</string>
+
+    <!--    Main Button Labels-->
+    <string name="main_term_button_label">Terms</string>
+    <string name="main_course_button_label">Courses</string>
+    <string name="main_assessment_button_label">Assessments</string>
+
+    <!--    Date Formats-->
+    <string name="date_format_short">MM/dd/yy</string>
+    <string name="date_format_medium">MM/dd/yyyy</string>
+    <string name="date_format_long">MMM dd, yyyy</string>
+
+    <!--    List Item Summary Formats-->
+    <string name="list_item_summary_format_term">Start: %1$s - End:%2$s</string>
+    <string name="list_item_summary_format_course">Start: %1$s - Est. End: %2$s [Status: %3$s]</string>
+    <string name="list_item_summary_format_assessment">Type: %1$s [Test Date: %2$s]</string>
+    <string name="list_item_summary_format_mentor">Email: %1$s | Phone: %2$s</string>
+
+
+    <!--    Menu Labels-->
+    <string name="menu_label_save">Save</string>
+    <string name="menu_label_delete">Delete</string>
+
+    <!--    Term Editor Labels-->
+    <string name="term_editor_title_new">New Term</string>
+    <string name="term_editor_title_edit">Edit Term</string>
+    <string name="term_editor_title_label">Term Title</string>
+    <string name="term_editor_title_hint_label">Enter Term Title</string>
+    <string name="term_editor_start_date_label">Start Date</string>
+    <string name="term_editor_start_date_hint">Enter Term Start Date</string>
+    <string name="term_editor_end_date_label">End Date</string>
+    <string name="term_editor_end_date_hint">Enter Term End Date</string>
+    <string name="term_editor_course_sect_title">Term Course List</string>
+    <string name="term_editor_cancel_title">Cancel Changes to Term?</string>
+    <string name="term_editor_cancel_message">Are you sure you want to leave and cancel your changes?</string>
+    <string name="term_editor_cancel_yes_button">Yes</string>
+    <string name="term_editor_cancel_no">No</string>
+    <string name="term_editor_delete_title">Delete %1$s ?</string>
+    <string name="term_editor_delete_message_no_courses">Are you sure you want to delete %1$s ?</string>
+    <string name="term_editor_delete_message_has_courses">Are you sure you want to delete %1$s ?</string>
+
 </resources>
