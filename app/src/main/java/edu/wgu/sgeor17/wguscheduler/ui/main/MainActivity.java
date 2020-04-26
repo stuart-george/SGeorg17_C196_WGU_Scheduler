@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 
 import edu.wgu.sgeor17.wguscheduler.R;
+import edu.wgu.sgeor17.wguscheduler.ui.course.CourseActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.term.TermActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
         Button courseButton = findViewById(R.id.main_course_button);
         courseButton.setOnClickListener((view) -> {
-            // TODO: 4/5/2020 Need to implement transition to Course List
+            Intent intent = new Intent(MainActivity.this, CourseActivity.class);
+            startActivity(intent);
         });
         Button assessmentButton = findViewById(R.id.main_assessment_button);
         assessmentButton.setOnClickListener((view) -> {

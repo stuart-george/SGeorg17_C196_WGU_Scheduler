@@ -3,7 +3,7 @@ package edu.wgu.sgeor17.wguscheduler.model;
 import edu.wgu.sgeor17.wguscheduler.R;
 import edu.wgu.sgeor17.wguscheduler.ui.main.MainActivity;
 
-enum CourseStatus {
+public enum CourseStatus {
     IN_PROGRESS(0, R.string.course_status_in_progress),
     COMPLETE(1, R.string.course_status_completed),
     DROPPED(2, R.string.course_status_dropped),

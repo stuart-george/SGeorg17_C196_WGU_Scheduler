@@ -5,12 +5,15 @@
     <!--    Page Labels-->
     <string name="title_activity_term">Term List</string>
     <string name="title_activity_term_detail">TermDetailActivity</string>
+    <string name="title_activity_course">CourseActivity</string>
+    <string name="title_activity_course_detail">CourseDetailActivity</string>
+
 
     <!--    Course Status Labels-->
     <string name="course_status_in_progress">In Progress</string>
     <string name="course_status_completed">Completed</string>
     <string name="course_status_dropped">Dropped</string>
-    <string name="course_status_planned">Pan to Take</string>
+    <string name="course_status_planned">Plan to Take</string>
 
     <!--    Main Button Labels-->
     <string name="main_term_button_label">Terms</string>
@@ -39,9 +42,9 @@
     <string name="term_editor_title_label">Term Title</string>
     <string name="term_editor_title_hint_label">Enter Term Title</string>
     <string name="term_editor_start_date_label">Start Date</string>
-    <string name="term_editor_start_date_hint">Enter Term Start Date</string>
+    <string name="term_editor_start_date_hint">Enter Start Date (mm/dd/yyyy)</string>
     <string name="term_editor_end_date_label">End Date</string>
-    <string name="term_editor_end_date_hint">Enter Term End Date</string>
+    <string name="term_editor_end_date_hint">Enter End Date (mm/dd/yyyy)</string>
     <string name="term_editor_course_sect_title">Term Course List</string>
     <string name="term_editor_cancel_title">Cancel Changes to Term?</string>
     <string name="term_editor_cancel_message">Are you sure you want to leave and cancel your changes?</string>
@@ -51,4 +54,30 @@
     <string name="term_editor_delete_message_no_courses">Are you sure you want to delete %1$s ?</string>
     <string name="term_editor_delete_message_has_courses">Are you sure you want to delete %1$s ?</string>
 
+
+    <!--    Course Editor Labels-->
+    <string name="course_editor_title_label">Course Title</string>
+    <string name="course_editor_title_hint">Enter Course Title</string>
+    <string name="course_editor_start_date_label">Start Date</string>
+    <string name="course_editor_start_date_hint">Enter Start Date (mm/dd/yyyy)</string>
+    <string name="course_editor_end_date_label">Est. End Date</string>
+    <string name="course_editor_end_date_hint">Enter Est. End Date (mm/dd/yyyy)</string>
+    <string name="course_editor_status_label">Course Status</string>
+    <string name="course_editor_notes_title">Course Notes</string>
+    <string name="course_editor_assessment_title">Course Assessments</string>
+    <string name="course_editor_mentor_title">Course Mentors</string>
+    <string name="course_editor_mentor_title_image_description">Course Mentor Expand Button</string>
+    <string name="course_editor_notes_title_image_description">Course Notes Expansion Button</string>
+    <string name="course_editor_assessment_title_image_description">Course Assessment Expansion button</string>
+    <string name="course_editor_title_new">New Course</string>
+    <string name="course_editor__title_edit">Edit Course</string>
+    <string name="course_editor_cancel_title">Cancel Changes to Course</string>
+    <string name="course_editor_cancel_message">Are you super you want to leave and cancel your changes?</string>
+    <string name="course_editor_cancel_yes">Yes</string>
+    <string name="course_editor_cancel_no">No</string>
+    <string name="course_editor_delete_title">Delete %1$s ?</string>
+    <string name="course_editor_delete_message_no_associated_objects">Are you sure you want to delete %1$s ?</string>
+    <string name="course_editor_delete_message_has_associated_objects">Are you sure you want to delete %1$s ?</string>
+    <string name="course_editor_delete_yes">Yes</string>
+    <string name="course_editor_delete_no">Cancel</string>
 </resources>
