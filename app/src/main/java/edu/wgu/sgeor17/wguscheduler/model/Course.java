@@ -18,6 +18,7 @@ public class Course {
     @ColumnInfo (name = "est_end_date")
     private Date estEndDate;
     private CourseStatus status;
+    @ColumnInfo (name = "term_id")
     private int termID;
 
     @Ignore

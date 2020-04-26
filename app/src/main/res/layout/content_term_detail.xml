@@ -100,6 +100,7 @@
     </TableLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/term_course_title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -110,8 +111,8 @@
             android:id="@+id/term_course_title_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/term_editor_course_sect_title"
             android:layout_margin="10dp"
+            android:text="@string/term_editor_course_sect_title"
             android:textSize="@dimen/sub_title_text_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/term_editor_add_course_fab"
@@ -122,13 +123,23 @@
             android:id="@+id/term_editor_add_course_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:clickable="true"
             app:fabSize="mini"
-            android:layout_margin="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_add" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/term_course_list_recycle_viewer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/term_course_title_bar"
+        tools:listitem="@layout/list_detail_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

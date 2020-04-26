@@ -10,6 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.course.CourseDetailActivity"
+            android:label="@string/title_activity_course_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ui.course.CourseActivity"
+            android:label="@string/title_activity_course"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.term.TermDetailActivity"
             android:label="@string/title_activity_term_detail"
             android:theme="@style/AppTheme.NoActionBar" />

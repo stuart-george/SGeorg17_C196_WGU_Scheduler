@@ -7,25 +7,30 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import edu.wgu.sgeor17.wguscheduler.R;
+import edu.wgu.sgeor17.wguscheduler.model.Course;
+import edu.wgu.sgeor17.wguscheduler.ui.adapter.CourseListAdapter;
+import edu.wgu.sgeor17.wguscheduler.ui.course.CourseDetailActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.main.MainActivity;
 import edu.wgu.sgeor17.wguscheduler.utility.Constants;
 import edu.wgu.sgeor17.wguscheduler.utility.TextFormatting;
@@ -34,6 +39,11 @@ public class TermDetailActivity extends AppCompatActivity {
     private boolean newTerm, editing;
     private TermDetailViewModel viewModel;
     private SimpleDateFormat dateFormat;
+    private int termID;
+
+    private RecyclerView recyclerView;
+    private CourseListAdapter adapter;
+    private List<Course> courseData = new ArrayList<>();
 
     private EditText termTitleInput;
     private EditText termStartDateInput;
@@ -69,6 +79,7 @@ public class TermDetailActivity extends AppCompatActivity {
         }
 
         setButtonOnClick();
+        initRecyclerView();
         initViewModel();
         enableCourseAddButton();
     }
@@ -92,7 +103,8 @@ public class TermDetailActivity extends AppCompatActivity {
                 termStartDateInput.setText(dateFormat.format(myCalendar.getTime()));
             };
             new DatePickerDialog(
-                    this, date,
+                    this,
+                    date,
                     myCalendar.get(Calendar.YEAR),
                     myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH))
@@ -117,13 +129,24 @@ public class TermDetailActivity extends AppCompatActivity {
         });
 
         addCourseFAB.setOnClickListener((view) -> {
-            Intent intent = new Intent(this, TermActivity.class);
-            // TODO: 4/13/2020 Fix Intent to point to course detail.
+            Intent intent = new Intent(this, CourseDetailActivity.class);
+            intent.putExtra(Constants.TERM_ID_KEY, viewModel.getTermData().getValue().getId());
             startActivity(intent);
         });
     }
 
     private void initViewModel() {
+        final Observer<List<Course>> courseObserver = (courses) -> {
+            courseData.clear();
+            courseData.addAll(courses);
+
+            if (adapter == null) {
+                adapter = new CourseListAdapter(TermDetailActivity.this, courseData);
+                recyclerView.setAdapter(adapter);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
+        };
 
         viewModel = new ViewModelProvider(this).get(TermDetailViewModel.class);
         viewModel.getTermData().observe(this, term -> {
@@ -140,9 +163,17 @@ public class TermDetailActivity extends AppCompatActivity {
             newTerm = true;
         } else {
             setTitle(getString(R.string.term_editor_title_edit));
-            int termId = extras.getInt(Constants.TERM_ID_KEY);
-            viewModel.loadData(termId);
+            termID = extras.getInt(Constants.TERM_ID_KEY);
+            viewModel.loadData(termID);
+            viewModel.getCourseData().observe(this, courseObserver);
         }
+    }
+
+    private void initRecyclerView() {
+        recyclerView = findViewById(R.id.term_course_list_recycle_viewer);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
     }
 
     @Override
@@ -177,7 +208,7 @@ public class TermDetailActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_term_editor, menu);
+        getMenuInflater().inflate(R.menu.menu_editor, menu);
         return true;
     }
 
