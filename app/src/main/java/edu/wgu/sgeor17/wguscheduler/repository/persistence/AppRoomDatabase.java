@@ -7,12 +7,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import edu.wgu.sgeor17.wguscheduler.model.Course;
-import edu.wgu.sgeor17.wguscheduler.model.Term;
+import edu.wgu.sgeor17.wguscheduler.model.*;
 import edu.wgu.sgeor17.wguscheduler.repository.dao.*;
 import edu.wgu.sgeor17.wguscheduler.repository.utilities.*;
 
-@Database(entities = {Term.class, Course.class}, version = 2)
+@Database(entities = {Term.class, Course.class, Note.class}, version = 3)
 @TypeConverters({DateConverter.class, CourseStatusConverter.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
     private static volatile  AppRoomDatabase INSTANCE;
@@ -20,6 +19,7 @@ public abstract class AppRoomDatabase extends RoomDatabase {
 
     public abstract TermDao termDao();
     public abstract CourseDao courseDao();
+    public abstract NoteDao noteDao();
 
     public static AppRoomDatabase getInstance(Context context) {
         if (INSTANCE == null) {

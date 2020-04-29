@@ -7,7 +7,8 @@
     <string name="title_activity_term_detail">TermDetailActivity</string>
     <string name="title_activity_course">CourseActivity</string>
     <string name="title_activity_course_detail">CourseDetailActivity</string>
-
+    <string name="title_activity_note_detail">NoteDetailActivity</string>
+    <string name="title_activity_note">NoteActivity</string>
 
     <!--    Course Status Labels-->
     <string name="course_status_in_progress">In Progress</string>
@@ -80,4 +81,11 @@
     <string name="course_editor_delete_message_has_associated_objects">Are you sure you want to delete %1$s ?</string>
     <string name="course_editor_delete_yes">Yes</string>
     <string name="course_editor_delete_no">Cancel</string>
+
+    <!--    Note Editor-->
+    <string name="note_editor_text_input_hint">Enter Note</string>
+    <string name="note_editor_title_new">New Note</string>
+    <string name="note_editor_title_edit">Edit Note</string>
+    <string name="note_editor_sharing_title">Sharing Course Notes</string>
+
 </resources>

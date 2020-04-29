@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.Menu;
@@ -20,22 +22,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import edu.wgu.sgeor17.wguscheduler.R;
 import edu.wgu.sgeor17.wguscheduler.model.CourseStatus;
+import edu.wgu.sgeor17.wguscheduler.model.Note;
+import edu.wgu.sgeor17.wguscheduler.ui.adapter.NoteListAdapter;
 import edu.wgu.sgeor17.wguscheduler.ui.main.MainActivity;
+import edu.wgu.sgeor17.wguscheduler.ui.note.NoteDetailActivity;
 import edu.wgu.sgeor17.wguscheduler.utility.Constants;
 import edu.wgu.sgeor17.wguscheduler.utility.TextFormatting;
 
 public class CourseDetailActivity extends AppCompatActivity {
     private boolean newCourse, editing;
+    private boolean noteExpanded, mentorExpanded, assessmentExpanded;
     private CourseDetailViewModel viewModel;
     private SimpleDateFormat dateFormat;
 
@@ -54,8 +63,19 @@ public class CourseDetailActivity extends AppCompatActivity {
     private FloatingActionButton addAssessmentFAB;
     private FloatingActionButton addMentorFAB;
 
+    private ImageButton noteHideButton;
+    private ImageButton mentorHideButton;
+    private ImageButton assessmentHideButton;
+
+    private RecyclerView noteRecyclerView;
+    private RecyclerView mentorRecyclerView;
+    private RecyclerView assessmentRecyclerView;
+
     private int termID;
     private ArrayAdapter<CourseStatus> courseStatusAdapter;
+
+    private NoteListAdapter noteAdapter;
+    private List<Note> noteData = new ArrayList<>();
 
     private String TAG = "CourseDetailActivity";
 
@@ -80,12 +100,18 @@ public class CourseDetailActivity extends AppCompatActivity {
         addNoteFAB = findViewById(R.id.course_editor_add_note_fab);
         addAssessmentFAB = findViewById(R.id.course_editor_add_assessment_fab);
         addMentorFAB = findViewById(R.id.course_editor_add_mentor_fab);
+        noteHideButton = findViewById(R.id.course_notes_title_image_view);
+        mentorHideButton = findViewById(R.id.course_mentor_title_image_view);
+        assessmentHideButton = findViewById(R.id.course_assessment_title_image_view);
+
 
 
         if (savedInstanceState != null) {
             editing = savedInstanceState.getBoolean(Constants.EDITING_KEY);
         }
 
+
+        initRecyclerView();
         setButtonOnClick();
         initViewModel();
         enableAddButtons();
@@ -148,7 +174,9 @@ public class CourseDetailActivity extends AppCompatActivity {
         });
 
         addNoteFAB.setOnClickListener((view) -> {
-            // TODO: 4/25/2020 Set the page to load the note activity
+            Intent intent = new Intent(this, NoteDetailActivity.class);
+            intent.putExtra(Constants.COURSE_ID_KEY, viewModel.getCourseData().getValue().getId());
+            startActivity(intent);
         });
 
         addAssessmentFAB.setOnClickListener((view) -> {
@@ -158,9 +186,104 @@ public class CourseDetailActivity extends AppCompatActivity {
         addMentorFAB.setOnClickListener((view) -> {
             // TODO: 4/25/2020 Set the page to load the mentor activity
         });
+
+        noteHideButton.setOnClickListener((view) -> {
+            noteExpanded = noteRecyclerView.getVisibility() == View.VISIBLE;
+            if (noteExpanded) {
+                setNoteVisibility(false);
+            } else {
+                setNoteVisibility(true);
+                setMentorVisibility(false);
+                setAssessmentVisibility(false);
+            }
+        });
+
+        mentorHideButton.setOnClickListener((view) -> {
+            mentorExpanded = mentorRecyclerView.getVisibility() == View.VISIBLE;
+            if (mentorExpanded) {
+                setMentorVisibility(false);
+            } else {
+                setMentorVisibility(true);
+                setNoteVisibility(false);
+                setAssessmentVisibility(false);
+            }
+
+        });
+
+        assessmentHideButton.setOnClickListener((view) -> {
+            assessmentExpanded = assessmentRecyclerView.getVisibility() == View.VISIBLE;
+
+            if (assessmentExpanded) {
+                setAssessmentVisibility(false);
+            } else {
+                setAssessmentVisibility(true);
+                setNoteVisibility(false);
+                setMentorVisibility(false);
+            }
+        });
+    }
+
+    private void setNoteVisibility(boolean expandSection) {
+        if(expandSection) {
+            noteRecyclerView.setVisibility(View.VISIBLE);
+            noteHideButton.setImageResource(R.drawable.ic_expand_less);
+        } else {
+            noteRecyclerView.setVisibility(View.GONE);
+            noteHideButton.setImageResource(R.drawable.ic_expand_more);
+        }
+    }
+
+    private void setMentorVisibility(boolean expandSection) {
+        if (expandSection) {
+            mentorRecyclerView.setVisibility(View.VISIBLE);
+            mentorHideButton.setImageResource(R.drawable.ic_expand_less);
+        } else {
+            mentorRecyclerView.setVisibility(View.GONE);
+            mentorHideButton.setImageResource(R.drawable.ic_expand_more);
+        }
+
+    }
+
+    private void setAssessmentVisibility(boolean expandSection) {
+        if (expandSection) {
+            assessmentRecyclerView.setVisibility(ImageButton.VISIBLE);
+            assessmentHideButton.setImageResource(R.drawable.ic_expand_less);
+        } else {
+            assessmentRecyclerView.setVisibility(ImageButton.GONE);
+            assessmentHideButton.setImageResource(R.drawable.ic_expand_more);
+        }
+    }
+
+    private void initRecyclerView() {
+        noteRecyclerView = findViewById(R.id.course_note_recycler_view);
+        noteRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager noteLayoutManager = new LinearLayoutManager(this);
+        noteRecyclerView.setLayoutManager(noteLayoutManager);
+
+        mentorRecyclerView = findViewById(R.id.course_mentor_recycler_view);
+        mentorRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager mentorLayoutManager = new LinearLayoutManager(this);
+        mentorRecyclerView.setLayoutManager(mentorLayoutManager);
+
+        assessmentRecyclerView = findViewById(R.id.course_assessment_recycler_view);
+        assessmentRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager assessmentLayoutManager = new LinearLayoutManager(this);
+        assessmentRecyclerView.setLayoutManager(assessmentLayoutManager);
     }
 
     private void initViewModel() {
+        final Observer<List<Note>> noteObserver = (notes) -> {
+            noteData.clear();
+            noteData.addAll(notes);
+
+            if (noteAdapter == null) {
+                noteAdapter = new NoteListAdapter(CourseDetailActivity.this, noteData);
+                noteRecyclerView.setAdapter(noteAdapter);
+            } else {
+                noteAdapter.notifyDataSetChanged();
+            }
+        };
+
         viewModel = new ViewModelProvider(this).get(CourseDetailViewModel.class);
         viewModel.getCourseData().observe(this, course -> {
             if (course != null && !editing) {
@@ -182,7 +305,7 @@ public class CourseDetailActivity extends AppCompatActivity {
             setTitle(getString(R.string.course_editor__title_edit));
             int courseID = extras.getInt(Constants.COURSE_ID_KEY);
             viewModel.loadData(courseID);
-
+            viewModel.getNoteData().observe(this, noteObserver);
         }
 
     }

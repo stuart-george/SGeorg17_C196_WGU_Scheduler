@@ -5,18 +5,22 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import edu.wgu.sgeor17.wguscheduler.model.Course;
 import edu.wgu.sgeor17.wguscheduler.model.CourseStatus;
+import edu.wgu.sgeor17.wguscheduler.model.Note;
 import edu.wgu.sgeor17.wguscheduler.repository.AppRepository;
 
 public class CourseDetailViewModel extends AndroidViewModel {
     private MutableLiveData<Course> courseData = new MutableLiveData<>();
+    private LiveData<List<Note>> liveNotes;
     private AppRepository repository;
     private Executor executor = Executors.newSingleThreadExecutor();
 
@@ -30,9 +34,12 @@ public class CourseDetailViewModel extends AndroidViewModel {
             Course tempCourse = repository.getCourseByID(courseID);
             courseData.postValue(tempCourse);
         });
+        liveNotes = repository.getAllNotesForCourse(courseID);
     }
 
     public MutableLiveData<Course> getCourseData() {return courseData;}
+
+    public LiveData<List<Note>> getNoteData() {return  liveNotes;}
 
     public void saveCourse (String title,
                             Date startDate,
