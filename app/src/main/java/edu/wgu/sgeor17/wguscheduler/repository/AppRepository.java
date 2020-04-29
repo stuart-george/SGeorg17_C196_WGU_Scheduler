@@ -9,8 +9,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import edu.wgu.sgeor17.wguscheduler.model.Course;
+import edu.wgu.sgeor17.wguscheduler.model.Note;
 import edu.wgu.sgeor17.wguscheduler.model.Term;
 import edu.wgu.sgeor17.wguscheduler.repository.dao.CourseDao;
+import edu.wgu.sgeor17.wguscheduler.repository.dao.NoteDao;
 import edu.wgu.sgeor17.wguscheduler.repository.dao.TermDao;
 import edu.wgu.sgeor17.wguscheduler.repository.persistence.AppRoomDatabase;
 
@@ -20,9 +22,11 @@ public class AppRepository {
 
     private TermDao termDao;
     private CourseDao courseDao;
+    private NoteDao noteDao;
 
     private LiveData<List<Term>> terms;
     private LiveData<List<Course>> courses;
+    private LiveData<List<Note>> notes;
 
     private AppRepository(Application application) {
         AppRoomDatabase database = AppRoomDatabase.getInstance(application.getApplicationContext());
@@ -31,6 +35,9 @@ public class AppRepository {
 
         this.courseDao = database.courseDao();
         this.courses = courseDao.getAllCourses();
+
+        this.noteDao = database.noteDao();
+        this.notes = noteDao.getAllNotes();
 
     }
 
@@ -84,5 +91,30 @@ public class AppRepository {
 
     public void unAssignCoursesForTerm(int termID) {
         executor.execute(() -> courseDao.unAssignAllCoursesForTerm(termID));
+    }
+
+    //Note Methods
+    public LiveData<List<Note>> getAllNotes() {
+        return notes;
+    }
+
+    public LiveData<List<Note>> getAllNotesForCourse(int courseID) {
+        return noteDao.getAllNotesForCourse(courseID);
+    }
+
+    public Note getNoteByID (int noteID) {
+        return noteDao.getNoteByID(noteID);
+    }
+
+    public void insertNote(Note note) {
+        executor.execute(() -> noteDao.insertNote(note));
+    }
+
+    public void deleteNote(Note note) {
+        executor.execute(() -> noteDao.deleteNote(note));
+    }
+
+    public void deleteAllNotesForCourse(int courseID) {
+        executor.execute(() -> noteDao.deleteAllNotesForCourse(courseID));
     }
 }
