@@ -1,5 +1,13 @@
 package edu.wgu.sgeor17.wguscheduler.utility;
 
+import java.util.Date;
+
+import edu.wgu.sgeor17.wguscheduler.R;
+import edu.wgu.sgeor17.wguscheduler.model.Course;
+import edu.wgu.sgeor17.wguscheduler.model.CourseStatus;
+import edu.wgu.sgeor17.wguscheduler.model.Term;
+import edu.wgu.sgeor17.wguscheduler.ui.main.MainActivity;
+
 public class Constants {
     public static final int NEW_ACTIVITY_REQUEST_COD = 1;
     public static final String TERM_ID_KEY = "term_id_key";
@@ -9,4 +17,18 @@ public class Constants {
     public static final String NOTE_ID_KEY = "note_id_key";
     public static final String EDITING_KEY = "editing_key";
     public static final int DEFAULT_TERM_ID = -1;
+    public static final int DEFAULT_COURSE_ID = -1;
+    public static final Term UNASSIGNED_TERM = new Term (
+            DEFAULT_TERM_ID,
+            MainActivity.getContext().getString(R.string.course_term_unassigned),
+            new Date(),
+            new Date()
+    );
+    public static final Course UNASSIGNED_COURSE = new Course(
+            DEFAULT_COURSE_ID,
+            MainActivity.getContext().getString(R.string.assessment_course_unassigned),
+            new Date(),
+            new Date(),
+            CourseStatus.IN_PROGRESS,
+            DEFAULT_TERM_ID);
 }

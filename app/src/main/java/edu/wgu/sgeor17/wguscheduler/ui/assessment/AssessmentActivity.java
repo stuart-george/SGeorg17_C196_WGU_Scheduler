@@ -1,4 +1,4 @@
-package edu.wgu.sgeor17.wguscheduler.ui.term;
+package edu.wgu.sgeor17.wguscheduler.ui.assessment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,57 +19,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.wgu.sgeor17.wguscheduler.R;
-import edu.wgu.sgeor17.wguscheduler.model.Term;
-import edu.wgu.sgeor17.wguscheduler.ui.adapter.TermListAdapter;
+import edu.wgu.sgeor17.wguscheduler.model.Assessment;
+import edu.wgu.sgeor17.wguscheduler.ui.adapter.AssessmentListAdapter;
 
-public class TermActivity extends AppCompatActivity {
+public class AssessmentActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private List<Term> termData = new ArrayList<>();
-    private TermListAdapter adapter;
-    private TermViewModel viewModel;
+    private List<Assessment> assessmentData = new ArrayList<>();
+    private AssessmentListAdapter adapter;
+    private AssessmentViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_term);
+        setContentView(R.layout.activity_assessment);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        FloatingActionButton fab = findViewById(R.id.term_add_fab);
-        fab.setOnClickListener(view -> {
-            Intent intent = new Intent(TermActivity.this, TermDetailActivity.class);
-            startActivity(intent);
+        FloatingActionButton fab = findViewById(R.id.assessment_add_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        AssessmentActivity.this,
+                        AssessmentDetailActivity.class);
+                startActivity(intent);
+            }
         });
 
         initRecyclerView();
         initViewModel();
     }
 
-
     private void initRecyclerView() {
-        recyclerView = findViewById(R.id.term_terms_recycler_view);
+        recyclerView = findViewById(R.id.assessment_assessment_recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
     }
 
     private void initViewModel() {
-        final Observer<List<Term>> termObserver = (terms) -> {
-            termData.clear();
-            termData.addAll(terms);
-
+        final Observer<List<Assessment>> assessmentObserver = (assessments) -> {
+            assessmentData.clear();
+            assessmentData.addAll(assessments);
             if (adapter == null) {
-                adapter = new TermListAdapter(TermActivity.this, termData);
+                adapter = new AssessmentListAdapter(AssessmentActivity.this, assessmentData);
                 recyclerView.setAdapter(adapter);
             } else {
                 adapter.notifyDataSetChanged();
             }
         };
 
-        viewModel = new ViewModelProvider(this).get(TermViewModel.class);
-        viewModel.getAllTerms().observe(this, termObserver);
+        viewModel = new ViewModelProvider(this).get(AssessmentViewModel.class);
+        viewModel.getAllAssessments().observe(this, assessmentObserver);
     }
 
     @Override
@@ -77,5 +80,4 @@ public class TermActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
-
 }

@@ -16,6 +16,9 @@ import android.view.MenuItem;
 import android.widget.Button;
 
 import edu.wgu.sgeor17.wguscheduler.R;
+import edu.wgu.sgeor17.wguscheduler.model.AssessmentType;
+import edu.wgu.sgeor17.wguscheduler.ui.assessment.AssessmentActivity;
+import edu.wgu.sgeor17.wguscheduler.ui.assessment.AssessmentDetailActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.course.CourseActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.term.TermActivity;
 
@@ -48,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
         });
         Button assessmentButton = findViewById(R.id.main_assessment_button);
         assessmentButton.setOnClickListener((view) -> {
-            // TODO: 4/5/2020 Need to implement transition to Assessment list
+            Intent intent = new Intent(MainActivity.this, AssessmentActivity.class);
+            startActivity(intent);
         });
     }
 

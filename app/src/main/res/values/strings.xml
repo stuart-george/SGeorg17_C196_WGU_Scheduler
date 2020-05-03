@@ -16,6 +16,10 @@
     <string name="course_status_dropped">Dropped</string>
     <string name="course_status_planned">Plan to Take</string>
 
+    <!--    Assessment Type Labels-->
+    <string name="assessment_type_performance">Performance</string>
+    <string name="assessment_type_objective">Objective</string>
+
     <!--    Main Button Labels-->
     <string name="main_term_button_label">Terms</string>
     <string name="main_course_button_label">Courses</string>
@@ -87,5 +91,21 @@
     <string name="note_editor_title_new">New Note</string>
     <string name="note_editor_title_edit">Edit Note</string>
     <string name="note_editor_sharing_title">Sharing Course Notes</string>
+    <string name="title_activity_assessment">AssessmentActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_assessment_detail">AssessmentDetailActivity</string>
+    <string name="assessment_editor_title_hint">Enter Assessment Name</string>
+    <string name="assessment_editor_date_hint">Enter Assessment Date (mm/dd/yyyy)</string>
+    <string name="assessment_editor_title_new">New Assessment</string>
+    <string name="assessment_editor_title_edit">Edit Assessment</string>
+    <string name="assessment_course_unassigned">No Course Assigned</string>
+    <string name="course_term_unassigned">Unassigned Term</string>
 
 </resources>

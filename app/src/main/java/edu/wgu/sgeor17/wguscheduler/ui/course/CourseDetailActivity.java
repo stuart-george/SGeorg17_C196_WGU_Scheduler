@@ -34,9 +34,12 @@ import java.util.Date;
 import java.util.List;
 
 import edu.wgu.sgeor17.wguscheduler.R;
+import edu.wgu.sgeor17.wguscheduler.model.Assessment;
 import edu.wgu.sgeor17.wguscheduler.model.CourseStatus;
 import edu.wgu.sgeor17.wguscheduler.model.Note;
+import edu.wgu.sgeor17.wguscheduler.ui.adapter.AssessmentListAdapter;
 import edu.wgu.sgeor17.wguscheduler.ui.adapter.NoteListAdapter;
+import edu.wgu.sgeor17.wguscheduler.ui.assessment.AssessmentDetailActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.main.MainActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.note.NoteDetailActivity;
 import edu.wgu.sgeor17.wguscheduler.utility.Constants;
@@ -76,6 +79,8 @@ public class CourseDetailActivity extends AppCompatActivity {
 
     private NoteListAdapter noteAdapter;
     private List<Note> noteData = new ArrayList<>();
+    private AssessmentListAdapter assessmentAdapter;
+    private List<Assessment> assessmentData = new ArrayList<>();
 
     private String TAG = "CourseDetailActivity";
 
@@ -180,7 +185,9 @@ public class CourseDetailActivity extends AppCompatActivity {
         });
 
         addAssessmentFAB.setOnClickListener((view) -> {
-            // TODO: 4/25/2020 Set the page to load the assessment activity
+            Intent intent = new Intent(this, AssessmentDetailActivity.class);
+            intent.putExtra(Constants.COURSE_ID_KEY, viewModel.getCourseData().getValue().getId());
+            startActivity(intent);
         });
 
         addMentorFAB.setOnClickListener((view) -> {
@@ -284,6 +291,18 @@ public class CourseDetailActivity extends AppCompatActivity {
             }
         };
 
+        final Observer<List<Assessment>> assessmentObserver = (assessments) -> {
+            assessmentData.clear();
+            assessmentData.addAll(assessments);
+
+            if (assessmentAdapter == null) {
+                assessmentAdapter = new AssessmentListAdapter(CourseDetailActivity.this, assessmentData);
+                assessmentRecyclerView.setAdapter(assessmentAdapter);
+            } else {
+                assessmentAdapter.notifyDataSetChanged();
+            }
+        };
+
         viewModel = new ViewModelProvider(this).get(CourseDetailViewModel.class);
         viewModel.getCourseData().observe(this, course -> {
             if (course != null && !editing) {
@@ -306,6 +325,7 @@ public class CourseDetailActivity extends AppCompatActivity {
             int courseID = extras.getInt(Constants.COURSE_ID_KEY);
             viewModel.loadData(courseID);
             viewModel.getNoteData().observe(this, noteObserver);
+            viewModel.getAssessmentsData().observe(this, assessmentObserver);
         }
 
     }
