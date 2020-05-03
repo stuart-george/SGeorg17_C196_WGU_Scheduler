@@ -1,11 +1,13 @@
 package edu.wgu.sgeor17.wguscheduler.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Entity (tableName = "courses")
 public class Course {
@@ -93,5 +95,24 @@ public class Course {
 
     public void setTermID(int termID) {
         this.termID = termID;
+    }
+
+    @Override
+    public String toString() {
+        return "ID:" + id +
+                " - " + title;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return id == course.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

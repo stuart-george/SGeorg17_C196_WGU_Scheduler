@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import edu.wgu.sgeor17.wguscheduler.model.Assessment;
 import edu.wgu.sgeor17.wguscheduler.model.Course;
 import edu.wgu.sgeor17.wguscheduler.model.Note;
 import edu.wgu.sgeor17.wguscheduler.model.Term;
+import edu.wgu.sgeor17.wguscheduler.repository.dao.AssessmentDao;
 import edu.wgu.sgeor17.wguscheduler.repository.dao.CourseDao;
 import edu.wgu.sgeor17.wguscheduler.repository.dao.NoteDao;
 import edu.wgu.sgeor17.wguscheduler.repository.dao.TermDao;
@@ -23,10 +25,12 @@ public class AppRepository {
     private TermDao termDao;
     private CourseDao courseDao;
     private NoteDao noteDao;
+    private AssessmentDao assessmentDao;
 
     private LiveData<List<Term>> terms;
     private LiveData<List<Course>> courses;
     private LiveData<List<Note>> notes;
+    private LiveData<List<Assessment>> assessments;
 
     private AppRepository(Application application) {
         AppRoomDatabase database = AppRoomDatabase.getInstance(application.getApplicationContext());
@@ -38,6 +42,9 @@ public class AppRepository {
 
         this.noteDao = database.noteDao();
         this.notes = noteDao.getAllNotes();
+
+        this.assessmentDao = database.assessmentDao();
+        this.assessments = assessmentDao.getAllAssessments();
 
     }
 
@@ -116,5 +123,36 @@ public class AppRepository {
 
     public void deleteAllNotesForCourse(int courseID) {
         executor.execute(() -> noteDao.deleteAllNotesForCourse(courseID));
+    }
+
+    //Assessment Methods
+    public LiveData<List<Assessment>> getAllAssessments() {return assessments; }
+
+    public LiveData<List<Assessment>> getAllAssessmentsForCourse(int courseID) {
+        return  assessmentDao.getAllAssessmentsForCourse(courseID);
+    }
+
+    public LiveData<List<Assessment>> getAllUnassignedAssessments() {
+        return assessmentDao.getAllUnAssignedAssessments();
+    }
+
+    public Assessment getAssessmentByID (int assessmentID) {
+        return assessmentDao.getAssessmentByID(assessmentID);
+    }
+
+    public void insertAssessment(Assessment assessment) {
+        executor.execute(() -> assessmentDao.insertAssessment(assessment));
+    }
+
+    public void deleteAssessment(Assessment assessment) {
+        executor.execute(() -> assessmentDao.deleteAssessment(assessment));
+    }
+
+    public void deleteAllAssessmentsForCourse (int courseID) {
+        executor.execute(() -> assessmentDao.deleteAllAssessmentsForCourse(courseID));
+    }
+
+    public void unAssignAllAssessmentsForCourse(int courseID) {
+        executor.execute(() -> assessmentDao.unAssignAllAssessmentsForCourse(courseID));
     }
 }

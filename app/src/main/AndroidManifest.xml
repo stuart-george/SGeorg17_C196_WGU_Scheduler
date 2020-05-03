@@ -10,6 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.assessment.AssessmentDetailActivity"
+            android:label="@string/title_activity_assessment_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ui.assessment.AssessmentActivity"
+            android:label="@string/title_activity_assessment"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.note.NoteDetailActivity"
             android:label="@string/title_activity_note"
             android:theme="@style/AppTheme.NoActionBar" />

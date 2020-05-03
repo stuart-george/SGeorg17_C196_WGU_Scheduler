@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import edu.wgu.sgeor17.wguscheduler.model.Assessment;
 import edu.wgu.sgeor17.wguscheduler.model.Course;
 import edu.wgu.sgeor17.wguscheduler.model.CourseStatus;
 import edu.wgu.sgeor17.wguscheduler.model.Note;
@@ -21,6 +22,7 @@ import edu.wgu.sgeor17.wguscheduler.repository.AppRepository;
 public class CourseDetailViewModel extends AndroidViewModel {
     private MutableLiveData<Course> courseData = new MutableLiveData<>();
     private LiveData<List<Note>> liveNotes;
+    private LiveData<List<Assessment>> liveAssessments;
     private AppRepository repository;
     private Executor executor = Executors.newSingleThreadExecutor();
 
@@ -35,11 +37,14 @@ public class CourseDetailViewModel extends AndroidViewModel {
             courseData.postValue(tempCourse);
         });
         liveNotes = repository.getAllNotesForCourse(courseID);
+        liveAssessments = repository.getAllAssessmentsForCourse(courseID);
     }
 
     public MutableLiveData<Course> getCourseData() {return courseData;}
 
     public LiveData<List<Note>> getNoteData() {return  liveNotes;}
+
+    public LiveData<List<Assessment>> getAssessmentsData() { return liveAssessments;}
 
     public void saveCourse (String title,
                             Date startDate,
