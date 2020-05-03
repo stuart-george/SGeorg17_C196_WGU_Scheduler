@@ -34,12 +34,17 @@
     <string name="list_item_summary_format_term">Start: %1$s - End:%2$s</string>
     <string name="list_item_summary_format_course">Start: %1$s - Est. End: %2$s [Status: %3$s]</string>
     <string name="list_item_summary_format_assessment">Type: %1$s [Test Date: %2$s]</string>
+    <string name="list_item_title_format_mentor">%2$s, %1$s</string>
     <string name="list_item_summary_format_mentor">Email: %1$s | Phone: %2$s</string>
 
 
     <!--    Menu Labels-->
     <string name="menu_label_save">Save</string>
     <string name="menu_label_delete">Delete</string>
+
+    <!--    Unassigned Labels-->
+    <string name="course_unassigned">No Course Assigned</string>
+    <string name="term_unassigned">No Term Assigned</string>
 
     <!--    Term Editor Labels-->
     <string name="term_editor_title_new">New Term</string>
@@ -56,8 +61,8 @@
     <string name="term_editor_cancel_yes_button">Yes</string>
     <string name="term_editor_cancel_no">No</string>
     <string name="term_editor_delete_title">Delete %1$s ?</string>
-    <string name="term_editor_delete_message_no_courses">Are you sure you want to delete %1$s ?</string>
-    <string name="term_editor_delete_message_has_courses">Are you sure you want to delete %1$s ?</string>
+    <string name="term_editor_delete_message_no_courses">Are you sure you want to delete %1$s?</string>
+    <string name="term_editor_delete_message_has_courses">Are you sure you want to delete %1$s? Courses will be unassigned to be used in other terms.</string>
 
 
     <!--    Course Editor Labels-->
@@ -82,7 +87,7 @@
     <string name="course_editor_cancel_no">No</string>
     <string name="course_editor_delete_title">Delete %1$s ?</string>
     <string name="course_editor_delete_message_no_associated_objects">Are you sure you want to delete %1$s ?</string>
-    <string name="course_editor_delete_message_has_associated_objects">Are you sure you want to delete %1$s ?</string>
+    <string name="course_editor_delete_message_has_associated_objects">Are you sure you want to delete course %1$s and its associated Notes, Mentors? Note: Assessments will be unassigned.</string>
     <string name="course_editor_delete_yes">Yes</string>
     <string name="course_editor_delete_no">Cancel</string>
 
@@ -91,21 +96,45 @@
     <string name="note_editor_title_new">New Note</string>
     <string name="note_editor_title_edit">Edit Note</string>
     <string name="note_editor_sharing_title">Sharing Course Notes</string>
-    <string name="title_activity_assessment">AssessmentActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="note_editor_delete_title">Delete this Note</string>
+    <string name="note_editor_delete_message">Are you sure you want to permanently delete this Note?</string>
+    <string name="note_editor_delete_yes">Yes</string>
+    <string name="note_editor_delete_no">No</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <!--    Assessment Editor-->
+    <string name="title_activity_assessment">AssessmentActivity</string>
     <string name="title_activity_assessment_detail">AssessmentDetailActivity</string>
     <string name="assessment_editor_title_hint">Enter Assessment Name</string>
     <string name="assessment_editor_date_hint">Enter Assessment Date (mm/dd/yyyy)</string>
     <string name="assessment_editor_title_new">New Assessment</string>
     <string name="assessment_editor_title_edit">Edit Assessment</string>
-    <string name="assessment_course_unassigned">No Course Assigned</string>
-    <string name="course_term_unassigned">Unassigned Term</string>
+    <string name="title_activity_mentor_detail">MentorDetailActivity</string>
+
+
+    <string name="assessment_editor_delete_title">Delete Assessment: %1$s</string>
+    <string name="assessment_editor_delete_message">Are you sure you want to permanently delete this assessment?</string>
+    <string name="assessment_editor_delete_yes">Yes</string>
+    <string name="assessment_editor_delete_no">No</string>
+
+
+    <!--    Mentor Editor-->
+    <string name="mentor_editor_name_first_label">First Name</string>
+    <string name="mentor_editor_name_first_hint">Enter Mentor First Name</string>
+    <string name="mentor_editor_name_last_label">Last Name</string>
+    <string name="mentor_editor_name_last_hint">Enter Mentor Last Name</string>
+    <string name="mentor_editor_email_label">E-Mail</string>
+    <string name="mentor_editor_email_hint">Enter Mentor E-mail</string>
+    <string name="mentor_editor_phone_label">Phone</string>
+    <string name="mentor_editor_phone_hint">Enter Mentor Phone Number</string>
+    <string name="mentor_editor_course_label">Assigned Course</string>
+    <string name="mentor_editor_cancel_title">Cancel Changes to Mentor</string>
+    <string name="mentor_editor_cancel_message">You have not saved your changes. Are you sure you want to leave without saving your changes?</string>
+    <string name="mentor_editor_cancel_yes">Yes</string>
+    <string name="mentor_editor_cancel_no">No</string>
+    <string name="mentor_editor_delete_title">Delete Mentor: %1$s</string>
+    <string name="mentor_editor_delete_message">Are you sure you want to delete this mentor record?</string>
+    <string name="mentor_editor_delete_yes">Yes</string>
+    <string name="mentor_editor_delete_no">No</string>
+
 
 </resources>

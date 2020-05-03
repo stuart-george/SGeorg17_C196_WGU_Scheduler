@@ -18,15 +18,18 @@ public class Constants {
     public static final String EDITING_KEY = "editing_key";
     public static final int DEFAULT_TERM_ID = -1;
     public static final int DEFAULT_COURSE_ID = -1;
+    public static final int DEFAULT_ASSESSMENT_ID = -1;
+    public static final int DEFAULT_NOTE_ID = -1;
+    public static final int DEFAULT_MENTOR_ID = -1;
     public static final Term UNASSIGNED_TERM = new Term (
             DEFAULT_TERM_ID,
-            MainActivity.getContext().getString(R.string.course_term_unassigned),
+            MainActivity.getContext().getString(R.string.term_unassigned),
             new Date(),
             new Date()
     );
     public static final Course UNASSIGNED_COURSE = new Course(
             DEFAULT_COURSE_ID,
-            MainActivity.getContext().getString(R.string.assessment_course_unassigned),
+            MainActivity.getContext().getString(R.string.course_unassigned),
             new Date(),
             new Date(),
             CourseStatus.IN_PROGRESS,
