@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import edu.wgu.sgeor17.wguscheduler.model.Assessment;
 import edu.wgu.sgeor17.wguscheduler.model.Course;
 import edu.wgu.sgeor17.wguscheduler.model.CourseStatus;
+import edu.wgu.sgeor17.wguscheduler.model.Mentor;
 import edu.wgu.sgeor17.wguscheduler.model.Note;
 import edu.wgu.sgeor17.wguscheduler.repository.AppRepository;
 
@@ -23,6 +24,7 @@ public class CourseDetailViewModel extends AndroidViewModel {
     private MutableLiveData<Course> courseData = new MutableLiveData<>();
     private LiveData<List<Note>> liveNotes;
     private LiveData<List<Assessment>> liveAssessments;
+    private LiveData<List<Mentor>> liveMentors;
     private AppRepository repository;
     private Executor executor = Executors.newSingleThreadExecutor();
 
@@ -38,6 +40,7 @@ public class CourseDetailViewModel extends AndroidViewModel {
         });
         liveNotes = repository.getAllNotesForCourse(courseID);
         liveAssessments = repository.getAllAssessmentsForCourse(courseID);
+        liveMentors = repository.getAllCourseMentors(courseID);
     }
 
     public MutableLiveData<Course> getCourseData() {return courseData;}
@@ -45,6 +48,8 @@ public class CourseDetailViewModel extends AndroidViewModel {
     public LiveData<List<Note>> getNoteData() {return  liveNotes;}
 
     public LiveData<List<Assessment>> getAssessmentsData() { return liveAssessments;}
+
+    public LiveData<List<Mentor>> getMentorData() {return liveMentors; }
 
     public void saveCourse (String title,
                             Date startDate,
@@ -70,6 +75,37 @@ public class CourseDetailViewModel extends AndroidViewModel {
     }
 
     public void deleteCourse () {
-        repository.deleteCourse(courseData.getValue());
+        if (courseData.getValue() != null) {
+            deleteAllCourseNotes();
+            deleteAllCourseMentors();
+            unAssignAllAssessments();
+            repository.deleteCourse(courseData.getValue());
+        }
     }
+
+    public void deleteAllCourseNotes() {
+        if (liveNotes.getValue().size() > 0 && courseData.getValue() != null) {
+            repository.deleteAllNotesForCourse(courseData.getValue().getId());
+        }
+    }
+
+    public void deleteAllCourseMentors() {
+        if (liveMentors.getValue().size() > 0 && courseData.getValue() != null) {
+            repository.deleteAllCourseMentors(courseData.getValue().getId());
+        }
+    }
+
+    public void unAssignAllAssessments() {
+        if (liveAssessments.getValue().size() > 0 && courseData.getValue() != null ) {
+            repository.unAssignAllAssessmentsForCourse(courseData.getValue().getId());
+        }
+    }
+
+    public void deleteAllCourseAssessments() {
+        if (liveAssessments.getValue().size() > 0 && courseData.getValue() != null) {
+            repository.deleteAllAssessmentsForCourse(courseData.getValue().getId());
+        }
+    }
+
+
 }

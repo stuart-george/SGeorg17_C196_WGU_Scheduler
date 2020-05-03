@@ -36,11 +36,14 @@ import java.util.List;
 import edu.wgu.sgeor17.wguscheduler.R;
 import edu.wgu.sgeor17.wguscheduler.model.Assessment;
 import edu.wgu.sgeor17.wguscheduler.model.CourseStatus;
+import edu.wgu.sgeor17.wguscheduler.model.Mentor;
 import edu.wgu.sgeor17.wguscheduler.model.Note;
 import edu.wgu.sgeor17.wguscheduler.ui.adapter.AssessmentListAdapter;
+import edu.wgu.sgeor17.wguscheduler.ui.adapter.MentorListAdapter;
 import edu.wgu.sgeor17.wguscheduler.ui.adapter.NoteListAdapter;
 import edu.wgu.sgeor17.wguscheduler.ui.assessment.AssessmentDetailActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.main.MainActivity;
+import edu.wgu.sgeor17.wguscheduler.ui.mentor.MentorDetailActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.note.NoteDetailActivity;
 import edu.wgu.sgeor17.wguscheduler.utility.Constants;
 import edu.wgu.sgeor17.wguscheduler.utility.TextFormatting;
@@ -55,10 +58,6 @@ public class CourseDetailActivity extends AppCompatActivity {
     private EditText startInput;
     private EditText endInput;
     private Spinner statusInput;
-
-    private ImageView notesImageView;
-    private ImageView assessmentImageView;
-    private ImageView mentorImageView;
 
     private FloatingActionButton startDateFAB;
     private FloatingActionButton endDateFAB;
@@ -81,6 +80,8 @@ public class CourseDetailActivity extends AppCompatActivity {
     private List<Note> noteData = new ArrayList<>();
     private AssessmentListAdapter assessmentAdapter;
     private List<Assessment> assessmentData = new ArrayList<>();
+    private MentorListAdapter mentorAdapter;
+    private List<Mentor> mentorData = new ArrayList<>();
 
     private String TAG = "CourseDetailActivity";
 
@@ -191,7 +192,9 @@ public class CourseDetailActivity extends AppCompatActivity {
         });
 
         addMentorFAB.setOnClickListener((view) -> {
-            // TODO: 4/25/2020 Set the page to load the mentor activity
+            Intent intent = new Intent(this, MentorDetailActivity.class);
+            intent.putExtra(Constants.COURSE_ID_KEY, viewModel.getCourseData().getValue().getId());
+            startActivity(intent);
         });
 
         noteHideButton.setOnClickListener((view) -> {
@@ -284,7 +287,9 @@ public class CourseDetailActivity extends AppCompatActivity {
             noteData.addAll(notes);
 
             if (noteAdapter == null) {
-                noteAdapter = new NoteListAdapter(CourseDetailActivity.this, noteData);
+                noteAdapter = new NoteListAdapter(
+                        CourseDetailActivity.this,
+                        noteData);
                 noteRecyclerView.setAdapter(noteAdapter);
             } else {
                 noteAdapter.notifyDataSetChanged();
@@ -296,10 +301,26 @@ public class CourseDetailActivity extends AppCompatActivity {
             assessmentData.addAll(assessments);
 
             if (assessmentAdapter == null) {
-                assessmentAdapter = new AssessmentListAdapter(CourseDetailActivity.this, assessmentData);
+                assessmentAdapter = new AssessmentListAdapter(
+                        CourseDetailActivity.this,
+                        assessmentData);
                 assessmentRecyclerView.setAdapter(assessmentAdapter);
             } else {
                 assessmentAdapter.notifyDataSetChanged();
+            }
+        };
+
+        final Observer<List<Mentor>> mentorObserver = (mentors) -> {
+            mentorData.clear();
+            mentorData.addAll(mentors);
+
+            if (mentorAdapter == null) {
+                mentorAdapter = new MentorListAdapter(
+                        CourseDetailActivity.this,
+                        mentorData);
+                mentorRecyclerView.setAdapter(mentorAdapter);
+            } else {
+                mentorAdapter.notifyDataSetChanged();
             }
         };
 
@@ -326,6 +347,7 @@ public class CourseDetailActivity extends AppCompatActivity {
             viewModel.loadData(courseID);
             viewModel.getNoteData().observe(this, noteObserver);
             viewModel.getAssessmentsData().observe(this, assessmentObserver);
+            viewModel.getMentorData().observe(this, mentorObserver);
         }
 
     }

@@ -10,10 +10,12 @@ import java.util.concurrent.Executors;
 
 import edu.wgu.sgeor17.wguscheduler.model.Assessment;
 import edu.wgu.sgeor17.wguscheduler.model.Course;
+import edu.wgu.sgeor17.wguscheduler.model.Mentor;
 import edu.wgu.sgeor17.wguscheduler.model.Note;
 import edu.wgu.sgeor17.wguscheduler.model.Term;
 import edu.wgu.sgeor17.wguscheduler.repository.dao.AssessmentDao;
 import edu.wgu.sgeor17.wguscheduler.repository.dao.CourseDao;
+import edu.wgu.sgeor17.wguscheduler.repository.dao.MentorDao;
 import edu.wgu.sgeor17.wguscheduler.repository.dao.NoteDao;
 import edu.wgu.sgeor17.wguscheduler.repository.dao.TermDao;
 import edu.wgu.sgeor17.wguscheduler.repository.persistence.AppRoomDatabase;
@@ -26,11 +28,13 @@ public class AppRepository {
     private CourseDao courseDao;
     private NoteDao noteDao;
     private AssessmentDao assessmentDao;
+    private MentorDao mentorDao;
 
     private LiveData<List<Term>> terms;
     private LiveData<List<Course>> courses;
     private LiveData<List<Note>> notes;
     private LiveData<List<Assessment>> assessments;
+    private LiveData<List<Mentor>> mentors;
 
     private AppRepository(Application application) {
         AppRoomDatabase database = AppRoomDatabase.getInstance(application.getApplicationContext());
@@ -46,6 +50,8 @@ public class AppRepository {
         this.assessmentDao = database.assessmentDao();
         this.assessments = assessmentDao.getAllAssessments();
 
+        this.mentorDao = database.mentorDao();
+        this.mentors = mentorDao.getAllMentors();
     }
 
     public static AppRepository getInstance(Application application) {
@@ -155,4 +161,38 @@ public class AppRepository {
     public void unAssignAllAssessmentsForCourse(int courseID) {
         executor.execute(() -> assessmentDao.unAssignAllAssessmentsForCourse(courseID));
     }
+
+    //Mentor Methods
+    public LiveData<List<Mentor>> getAllMentors() {
+        return mentors;
+    }
+
+    public LiveData<List<Mentor>> getAllCourseMentors(int courseID) {
+        return mentorDao.getAllCourseMentors(courseID);
+    }
+
+    public LiveData<List<Mentor>> getAllUnAssignedMentors() {
+        return mentorDao.getAllUnAssignedMentors();
+    }
+
+    public Mentor getMentorByID (int mentorID) {
+        return mentorDao.getMentorByID(mentorID);
+    }
+
+    public void insertMentor(Mentor mentor) {
+        executor.execute(() -> mentorDao.insertMentor(mentor));
+    }
+
+    public void deleteMentor(Mentor mentor) {
+        executor.execute(() -> mentorDao.deleteMentor(mentor));
+    }
+
+    public void deleteAllCourseMentors(int courseID) {
+        executor.execute(() -> mentorDao.getAllCourseMentors(courseID));
+    }
+
+    public void unAssignAllCourseMentors(int courseID) {
+        executor.execute(() -> mentorDao.unAssignAllCourseMentors(courseID));
+    }
+
 }
