@@ -1,8 +1,11 @@
 package edu.wgu.sgeor17.wguscheduler.ui.assessment;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 
@@ -34,6 +37,7 @@ import edu.wgu.sgeor17.wguscheduler.R;
 import edu.wgu.sgeor17.wguscheduler.model.AssessmentType;
 import edu.wgu.sgeor17.wguscheduler.model.Course;
 import edu.wgu.sgeor17.wguscheduler.model.CourseStatus;
+import edu.wgu.sgeor17.wguscheduler.utility.AlertBroadcastReceiver;
 import edu.wgu.sgeor17.wguscheduler.utility.Constants;
 import edu.wgu.sgeor17.wguscheduler.utility.TextFormatting;
 
@@ -41,6 +45,7 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     private boolean newAssessment, editing;
     private AssessmentDetailViewModel viewModel;
     private SimpleDateFormat dateFormat;
+    private SimpleDateFormat requestCodeFormat;
 
     private EditText titleInput;
     private EditText dateInput;
@@ -50,6 +55,8 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     private FloatingActionButton dateFAB;
 
     private int courseID;
+    private int assessmentID = 0;
+    private int previousAssessmentRequestCode;
     private final Course UNASSIGNED_COURSE = Constants.UNASSIGNED_COURSE;
 
     private ArrayAdapter<AssessmentType> typeAdapter;
@@ -69,6 +76,7 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_cancel);
 
         dateFormat = TextFormatting.mediumDateFormat;
+        requestCodeFormat = TextFormatting.integerDateFormat;
 
         titleInput = findViewById(R.id.assessment_title_input);
         dateInput = findViewById(R.id.assessment_date_input);
@@ -122,6 +130,8 @@ public class AssessmentDetailActivity extends AppCompatActivity {
                 int positionType = getTypeSpinnerPosition(assessment.getType());
                 typeInput.setSelection(positionType);
                 courseID = assessment.getCourseID();
+                assessmentID = assessment.getId();
+                previousAssessmentRequestCode = Integer.parseInt(requestCodeFormat.format(assessment.getAssessmentDate())+assessmentID);
                 Course tempCourse = new Course(
                         courseID,
                         "",
@@ -273,16 +283,65 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     private void saveAndReturn() {
         try {
             Date assessmentDate = dateFormat.parse(dateInput.getText().toString());
+            Date today = getTodayDate();
             viewModel.saveAssessment(
                     titleInput.getText().toString(),
                     assessmentDate,
                     getTypeSpinnerValue(),
                     getCourseSpinnerValue().getId()
             );
+
+            //Check against current date to prevent updates in title or completion triggering an alert.
+            if(assessmentDate.after(today) || assessmentDate.equals(today)) {
+                scheduleNotification(assessmentDate);
+            }
         } catch (ParseException e) {
             Log.e(TAG, "saveAndReturn: "+ e.getLocalizedMessage());
         }
         finish();
 
+    }
+
+    private void scheduleNotification(Date date) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        int previousRequestCode;
+
+        String tag = Constants.NOTIFICATION_ASSESSMENT_ID_TAG;
+        String title = getString(R.string.notification_assessment_title);
+        String message = getString(R.string.notification_assessment_message, titleInput.getText().toString(), dateFormat.format(date));
+
+        int requestCode = Integer.parseInt(requestCodeFormat.format(date)+assessmentID);
+        Intent notificationIntent = new Intent(this, AlertBroadcastReceiver.class);
+
+        if(!newAssessment) {
+            previousRequestCode = previousAssessmentRequestCode;
+            Intent oldIntent = new Intent(this, AlertBroadcastReceiver.class);
+            PendingIntent oldPendingIntent = PendingIntent.getBroadcast(this, previousRequestCode, oldIntent, 0);
+            alarmManager.cancel(oldPendingIntent);
+
+            notificationIntent.putExtra(Constants.ASSESSMENT_ID_KEY, assessmentID);
+        }
+
+        notificationIntent.putExtra(Constants.NOTIFICATION_ID_KEY, assessmentID);
+        notificationIntent.putExtra(Constants.NOTIFICATION_TAG_KEY, tag);
+        notificationIntent.putExtra(Constants.NOTIFICATION_TITLE_KEY, title);
+        notificationIntent.putExtra(Constants.NOTIFICATION_MESSAGE_KEY, message);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                requestCode,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
+
+    }
+
+    private Date getTodayDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 }

@@ -12,7 +12,7 @@
         <activity
             android:name=".ui.mentor.MentorDetailActivity"
             android:label="@string/title_activity_mentor_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.assessment.AssessmentDetailActivity"
             android:label="@string/title_activity_assessment_detail"
@@ -51,6 +51,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".utility.AlertBroadcastReceiver"
+            android:enabled="true"/>
     </application>
 
 </manifest>

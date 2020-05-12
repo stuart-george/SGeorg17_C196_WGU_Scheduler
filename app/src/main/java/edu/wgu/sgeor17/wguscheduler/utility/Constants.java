@@ -16,11 +16,20 @@ public class Constants {
     public static final String MENTOR_ID_KEY = "mentor_id_key";
     public static final String NOTE_ID_KEY = "note_id_key";
     public static final String EDITING_KEY = "editing_key";
+    public static final String NOTIFICATION_ID_KEY = "notification_id_key";
+    public static final String NOTIFICATION_TITLE_KEY = "notification_title";
+    public static final String NOTIFICATION_MESSAGE_KEY = "notification_message";
+    public static final String NOTIFICATION_TAG_KEY = "notification_tag";
+    public static final String NOTIFICATION_COURSE_START_ID_TAG = "course_start";
+    public static final String NOTIFICATION_COURSE_END_ID_TAG = "course_end";
+    public static final String NOTIFICATION_ASSESSMENT_ID_TAG = "assessment";
+
     public static final int DEFAULT_TERM_ID = -1;
     public static final int DEFAULT_COURSE_ID = -1;
     public static final int DEFAULT_ASSESSMENT_ID = -1;
     public static final int DEFAULT_NOTE_ID = -1;
     public static final int DEFAULT_MENTOR_ID = -1;
+
     public static final Term UNASSIGNED_TERM = new Term (
             DEFAULT_TERM_ID,
             MainActivity.getContext().getString(R.string.term_unassigned),
