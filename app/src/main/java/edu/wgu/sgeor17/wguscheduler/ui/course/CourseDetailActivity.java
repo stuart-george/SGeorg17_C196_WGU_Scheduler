@@ -1,7 +1,9 @@
 package edu.wgu.sgeor17.wguscheduler.ui.course;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,6 +37,7 @@ import java.util.List;
 
 import edu.wgu.sgeor17.wguscheduler.R;
 import edu.wgu.sgeor17.wguscheduler.model.Assessment;
+import edu.wgu.sgeor17.wguscheduler.model.Course;
 import edu.wgu.sgeor17.wguscheduler.model.CourseStatus;
 import edu.wgu.sgeor17.wguscheduler.model.Mentor;
 import edu.wgu.sgeor17.wguscheduler.model.Note;
@@ -45,14 +48,20 @@ import edu.wgu.sgeor17.wguscheduler.ui.assessment.AssessmentDetailActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.main.MainActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.mentor.MentorDetailActivity;
 import edu.wgu.sgeor17.wguscheduler.ui.note.NoteDetailActivity;
+import edu.wgu.sgeor17.wguscheduler.utility.AlertBroadcastReceiver;
 import edu.wgu.sgeor17.wguscheduler.utility.Constants;
 import edu.wgu.sgeor17.wguscheduler.utility.TextFormatting;
 
 public class CourseDetailActivity extends AppCompatActivity {
+    private enum NotificationType {
+        START,
+        END
+    }
     private boolean newCourse, editing;
     private boolean noteExpanded, mentorExpanded, assessmentExpanded;
     private CourseDetailViewModel viewModel;
     private SimpleDateFormat dateFormat;
+    private SimpleDateFormat requestCodeFormat;
 
     private EditText titleInput;
     private EditText startInput;
@@ -73,6 +82,7 @@ public class CourseDetailActivity extends AppCompatActivity {
     private RecyclerView mentorRecyclerView;
     private RecyclerView assessmentRecyclerView;
 
+    private int courseID = 0;
     private int termID;
     private ArrayAdapter<CourseStatus> courseStatusAdapter;
 
@@ -82,6 +92,9 @@ public class CourseDetailActivity extends AppCompatActivity {
     private List<Assessment> assessmentData = new ArrayList<>();
     private MentorListAdapter mentorAdapter;
     private List<Mentor> mentorData = new ArrayList<>();
+
+    private int previousStartRequestCode;
+    private int previousEndRequestCode;
 
     private String TAG = "CourseDetailActivity";
 
@@ -96,6 +109,7 @@ public class CourseDetailActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_cancel);
 
         dateFormat = TextFormatting.mediumDateFormat;
+        requestCodeFormat = TextFormatting.integerDateFormat;
 
         titleInput = findViewById(R.id.course_title_text_input);
         startInput = findViewById(R.id.course_start_date_input);
@@ -333,6 +347,9 @@ public class CourseDetailActivity extends AppCompatActivity {
                 int position = getSpinnerPosition(course.getStatus());
                 statusInput.setSelection(position);
                 termID = course.getTermID();
+                courseID = course.getId();
+                previousStartRequestCode = Integer.parseInt(requestCodeFormat.format(course.getStartDate())+courseID);
+                previousEndRequestCode = Integer.parseInt(requestCodeFormat.format(course.getEstEndDate())+courseID);
             }
         });
 
@@ -459,16 +476,90 @@ public class CourseDetailActivity extends AppCompatActivity {
         try {
             Date startDate = dateFormat.parse(startInput.getText().toString());
             Date endDate = dateFormat.parse(endInput.getText().toString());
+            Date today = getTodayDate();
             viewModel.saveCourse(
                     titleInput.getText().toString(),
                     startDate,
                     endDate,
                     getSpinnerValue(),
                     termID);
+
+            //Logic checks against current date in order to prevent unnecessary alerts for past dates.
+            if(startDate.after(today) || startDate.equals(today)) {
+                scheduleNotification(NotificationType.START, startDate);
+            }
+
+            if(endDate.after(today) || endDate.equals(today)) {
+                scheduleNotification(NotificationType.END, endDate);
+            }
+
+
         } catch (ParseException e) {
             Log.e(TAG, "saveAndReturn: "+ e.getLocalizedMessage());
         }
         finish();
+    }
+
+    private void scheduleNotification (NotificationType type, Date date) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        String tag = "default";
+        String title = "No title set";
+        String message = "No Message set";
+        int requestCode = 0;
+        int previousRequestCode = 0;
+
+        switch (type) {
+            case START:
+                tag = Constants.NOTIFICATION_COURSE_START_ID_TAG;
+                title = getString(R.string.notification_course_title_start);
+                message = getString(R.string.notification_course_message_start, titleInput.getText(), dateFormat.format(date));
+                break;
+            case END:
+                tag = Constants.NOTIFICATION_COURSE_END_ID_TAG;
+                title = getString(R.string.notification_course_title_end);
+                message = getString(R.string.notification_course_message_end, titleInput.getText(), dateFormat.format(date));
+                break;
+        }
+
+        requestCode = Integer.parseInt(requestCodeFormat.format(date)+courseID);
+        Intent notificationIntent = new Intent(this, AlertBroadcastReceiver.class);
+
+        if (!newCourse) {
+            if(type == NotificationType.START) {
+                previousRequestCode = previousStartRequestCode;
+            } else {
+                previousRequestCode = previousEndRequestCode;
+            }
+            Intent oldIntent = new Intent(this, AlertBroadcastReceiver.class);
+            PendingIntent oldPendingIntent = PendingIntent.getBroadcast(this, previousRequestCode, oldIntent, 0);
+            alarmManager.cancel(oldPendingIntent);
+
+            //Set Course ID for future click action if not a new course
+            notificationIntent.putExtra(Constants.COURSE_ID_KEY, courseID);
+        }
+
+        notificationIntent.putExtra(Constants.NOTIFICATION_ID_KEY, courseID);
+        notificationIntent.putExtra(Constants.NOTIFICATION_TAG_KEY, tag);
+        notificationIntent.putExtra(Constants.NOTIFICATION_TITLE_KEY, title);
+        notificationIntent.putExtra(Constants.NOTIFICATION_MESSAGE_KEY, message);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                 requestCode,
+                 notificationIntent,
+                 PendingIntent.FLAG_UPDATE_CURRENT);
+
+            assert alarmManager != null;
+            alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
+
+    }
+
+    private Date getTodayDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 
 }

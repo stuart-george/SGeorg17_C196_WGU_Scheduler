@@ -45,4 +45,7 @@ public interface CourseDao {
 
     @Query("SELECT COUNT(*) FROM courses")
     int getCount();
+
+    @Query("SELECT * FROM courses ORDER BY course_id DESC LIMIT 1")
+    Course getLastInsertedCourse();
 }

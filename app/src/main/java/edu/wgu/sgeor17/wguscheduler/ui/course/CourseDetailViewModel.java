@@ -107,5 +107,10 @@ public class CourseDetailViewModel extends AndroidViewModel {
         }
     }
 
+    public int getLastCourseID() {
+        List<Course> courseList = repository.getAllCourses().getValue();
+        Course course = courseList.get(courseList.size() - 1 );
+        return course.getId();
+    }
 
 }

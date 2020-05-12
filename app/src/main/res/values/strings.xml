@@ -2,6 +2,11 @@
     <string name="app_name">WGU Scheduler</string>
     <string name="action_settings">Settings</string>
 
+    <!--    Notification Channel-->
+    <string name="default_channel_id">wgu_scheduler_default</string>
+    <string name="default_channel_name">WGU Student Channel</string>
+    <string name="default_channel_description">Channel for Notifications about Courses and Terms</string>
+
     <!--    Page Labels-->
     <string name="title_activity_term">Term List</string>
     <string name="title_activity_term_detail">TermDetailActivity</string>
@@ -109,8 +114,6 @@
     <string name="assessment_editor_title_new">New Assessment</string>
     <string name="assessment_editor_title_edit">Edit Assessment</string>
     <string name="title_activity_mentor_detail">MentorDetailActivity</string>
-
-
     <string name="assessment_editor_delete_title">Delete Assessment: %1$s</string>
     <string name="assessment_editor_delete_message">Are you sure you want to permanently delete this assessment?</string>
     <string name="assessment_editor_delete_yes">Yes</string>
@@ -119,7 +122,7 @@
 
     <!--    Mentor Editor-->
     <string name="mentor_editor_name_first_label">First Name</string>
-    <string name="mentor_editor_name_first_hint">Enter Mentor First Name</string>
+    <string name="mentor_editor_name_first_hint">Enter Mentor First Name</string>cb
     <string name="mentor_editor_name_last_label">Last Name</string>
     <string name="mentor_editor_name_last_hint">Enter Mentor Last Name</string>
     <string name="mentor_editor_email_label">E-Mail</string>
@@ -135,6 +138,14 @@
     <string name="mentor_editor_delete_message">Are you sure you want to delete this mentor record?</string>
     <string name="mentor_editor_delete_yes">Yes</string>
     <string name="mentor_editor_delete_no">No</string>
+
+    <!--    Notification messages-->
+    <string name="notification_course_title_start">Course Start Reminder</string>
+    <string name="notification_course_title_end">Course End Reminder</string>
+    <string name="notification_course_message_end">Your Course: %1$s will be ending on %2$s</string>
+    <string name="notification_course_message_start">Your Course: %1$s will be starting on %2$s</string>
+    <string name="notification_assessment_title">Assessment Reminder</string>
+    <string name="notification_assessment_message">Your Assessment: %1$s is due on %2$s</string>
 
 
 </resources>
