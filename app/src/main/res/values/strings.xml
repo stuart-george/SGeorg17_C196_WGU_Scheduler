@@ -146,6 +146,7 @@
     <string name="notification_course_message_start">Your Course: %1$s will be starting on %2$s</string>
     <string name="notification_assessment_title">Assessment Reminder</string>
     <string name="notification_assessment_message">Your Assessment: %1$s is due on %2$s</string>
+    <string name="course_editor_term_label">Course Term</string>
 
 
 </resources>

@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -41,6 +42,7 @@ import edu.wgu.sgeor17.wguscheduler.model.Course;
 import edu.wgu.sgeor17.wguscheduler.model.CourseStatus;
 import edu.wgu.sgeor17.wguscheduler.model.Mentor;
 import edu.wgu.sgeor17.wguscheduler.model.Note;
+import edu.wgu.sgeor17.wguscheduler.model.Term;
 import edu.wgu.sgeor17.wguscheduler.ui.adapter.AssessmentListAdapter;
 import edu.wgu.sgeor17.wguscheduler.ui.adapter.MentorListAdapter;
 import edu.wgu.sgeor17.wguscheduler.ui.adapter.NoteListAdapter;
@@ -67,6 +69,7 @@ public class CourseDetailActivity extends AppCompatActivity {
     private EditText startInput;
     private EditText endInput;
     private Spinner statusInput;
+    private Spinner termInput;
 
     private FloatingActionButton startDateFAB;
     private FloatingActionButton endDateFAB;
@@ -84,7 +87,9 @@ public class CourseDetailActivity extends AppCompatActivity {
 
     private int courseID = 0;
     private int termID;
+    private final Term UNASSIGNED_TERM = Constants.UNASSIGNED_TERM;
     private ArrayAdapter<CourseStatus> courseStatusAdapter;
+    private ArrayAdapter<Term> termAdapter;
 
     private NoteListAdapter noteAdapter;
     private List<Note> noteData = new ArrayList<>();
@@ -92,6 +97,8 @@ public class CourseDetailActivity extends AppCompatActivity {
     private List<Assessment> assessmentData = new ArrayList<>();
     private MentorListAdapter mentorAdapter;
     private List<Mentor> mentorData = new ArrayList<>();
+    private List<Term> terms = new ArrayList<>();
+
 
     private int previousStartRequestCode;
     private int previousEndRequestCode;
@@ -115,6 +122,7 @@ public class CourseDetailActivity extends AppCompatActivity {
         startInput = findViewById(R.id.course_start_date_input);
         endInput = findViewById(R.id.course_end_date_input);
         statusInput = findViewById(R.id.course_status_spinner_input);
+        termInput = findViewById(R.id.course_term_spinner_input);
         startDateFAB = findViewById(R.id.course_start_date_fab);
         endDateFAB = findViewById(R.id.course_end_date_fab);
         addNoteFAB = findViewById(R.id.course_editor_add_note_fab);
@@ -133,9 +141,9 @@ public class CourseDetailActivity extends AppCompatActivity {
 
         initRecyclerView();
         setButtonOnClick();
-        initViewModel();
         enableAddButtons();
         addSpinnerItems();
+        initViewModel();
 
     }
 
@@ -146,6 +154,25 @@ public class CourseDetailActivity extends AppCompatActivity {
                 CourseStatus.values()
         );
         statusInput.setAdapter(courseStatusAdapter);
+
+        termAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                terms
+        );
+        termInput.setAdapter(termAdapter);
+
+        termAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                if(!editing) {
+                    Term tempTerm = new Term (termID, "TEST", new Date(), new Date());
+                    int position = termAdapter.getPosition(tempTerm);
+                    termInput.setSelection(position);
+                }
+                super.onChanged();
+            }
+        });
     }
 
     private CourseStatus getSpinnerValue() {
@@ -154,6 +181,14 @@ public class CourseDetailActivity extends AppCompatActivity {
 
     private int getSpinnerPosition(CourseStatus status) {
         return courseStatusAdapter.getPosition(status);
+    }
+
+    private int getTermSpinnerPosition(Term term) {
+        return termAdapter.getPosition(term);
+    }
+
+    private Term getTermSpinnerValue() {
+        return (Term) termInput.getSelectedItem();
     }
 
     private void setButtonOnClick() {
@@ -296,6 +331,13 @@ public class CourseDetailActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
+        final Observer<List<Term>> termObserver = (termEntities) -> {
+            terms.clear();
+            terms.add(UNASSIGNED_TERM);
+            terms.addAll(termEntities);
+            termAdapter.notifyDataSetChanged();
+        };
+
         final Observer<List<Note>> noteObserver = (notes) -> {
             noteData.clear();
             noteData.addAll(notes);
@@ -339,6 +381,8 @@ public class CourseDetailActivity extends AppCompatActivity {
         };
 
         viewModel = new ViewModelProvider(this).get(CourseDetailViewModel.class);
+        viewModel.getTermData().observe(this, termObserver);
+
         viewModel.getCourseData().observe(this, course -> {
             if (course != null && !editing) {
                 titleInput.setText(course.getTitle());
@@ -350,14 +394,18 @@ public class CourseDetailActivity extends AppCompatActivity {
                 courseID = course.getId();
                 previousStartRequestCode = Integer.parseInt(requestCodeFormat.format(course.getStartDate())+courseID);
                 previousEndRequestCode = Integer.parseInt(requestCodeFormat.format(course.getEstEndDate())+courseID);
+
+                Term tempTerm = new Term(termID, "TEST", new Date(), new Date());
+                int positionTerm = getTermSpinnerPosition(tempTerm);
+                termInput.setSelection(positionTerm);
             }
         });
 
         Bundle extras = getIntent().getExtras();
-        if (extras == null || extras.getInt(Constants.COURSE_ID_KEY, -1) == -1) {
+        if (extras == null || extras.getInt(Constants.COURSE_ID_KEY, Constants.DEFAULT_COURSE_ID) == -1) {
             setTitle(getString(R.string.course_editor_title_new));
             newCourse = true;
-            termID = extras == null ? -1 : extras.getInt(Constants.TERM_ID_KEY, -1);
+            termID = extras == null ? -1 : extras.getInt(Constants.TERM_ID_KEY, -Constants.DEFAULT_TERM_ID);
         } else {
             setTitle(getString(R.string.course_editor__title_edit));
             int courseID = extras.getInt(Constants.COURSE_ID_KEY);
@@ -482,7 +530,7 @@ public class CourseDetailActivity extends AppCompatActivity {
                     startDate,
                     endDate,
                     getSpinnerValue(),
-                    termID);
+                    getTermSpinnerValue().getId());
 
             //Logic checks against current date in order to prevent unnecessary alerts for past dates.
             if(startDate.after(today) || startDate.equals(today)) {

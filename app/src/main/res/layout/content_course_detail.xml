@@ -1,132 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TableLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/course_table"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:stretchColumns="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="10dp">
 
-            <TextView
-                android:id="@+id/course_title_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:focusable="auto"
-                android:focusedByDefault="false"
-                android:text="@string/course_editor_title_label" />
+        <TextView
+            android:id="@+id/course_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="37dp"
+            android:layout_marginEnd="20dp"
+            android:focusedByDefault="false"
+            android:text="@string/course_editor_title_label"
+            app:layout_constraintEnd_toStartOf="@+id/course_title_text_input"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/course_title_text_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/course_editor_title_hint"
-                android:importantForAutofill="no"
-                android:inputType="textPersonName" />
-        </TableRow>
+        <EditText
+            android:id="@+id/course_title_text_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:hint="@string/course_editor_title_hint"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@+id/course_start_date_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/course_title_text_view"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="10dp">
 
-            <TextView
-                android:id="@+id/course_start_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="@string/course_editor_start_date_label" />
+        <TextView
+            android:id="@+id/course_start_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="35dp"
+            android:text="@string/course_editor_start_date_label"
+            app:layout_constraintBaseline_toBaselineOf="@+id/course_start_date_input"
+            app:layout_constraintEnd_toEndOf="@id/course_title_text_view"
+            app:layout_constraintEnd_toStartOf="@+id/course_start_date_input"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <EditText
-                android:id="@+id/course_start_date_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/course_editor_start_date_hint"
-                android:importantForAutofill="no"
-                android:inputType="date" />
+        <EditText
+            android:id="@+id/course_start_date_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="9dp"
+            android:ems="10"
+            android:hint="@string/course_editor_start_date_hint"
+            android:importantForAutofill="no"
+            android:inputType="date"
+            app:layout_constraintBottom_toTopOf="@+id/course_end_date_input"
+            app:layout_constraintEnd_toStartOf="@+id/course_start_date_fab"
+            app:layout_constraintStart_toEndOf="@+id/course_start_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/course_title_text_input" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/course_start_date_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                app:backgroundTint="#FFFFFF"
-                app:fabSize="mini"
-                app:srcCompat="@drawable/ic_calendar" />
-        </TableRow>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/course_start_date_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
+            app:backgroundTint="#FFFFFF"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@+id/course_end_date_fab"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/course_title_text_input"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:srcCompat="@drawable/ic_calendar" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="10dp">
 
-            <TextView
-                android:id="@+id/course_end_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="@string/course_editor_end_date_label" />
+        <TextView
+            android:id="@+id/course_end_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="15dp"
+            android:text="@string/course_editor_end_date_label"
+            app:layout_constraintBaseline_toBaselineOf="@+id/course_end_date_input"
+            app:layout_constraintEnd_toStartOf="@+id/course_end_date_input"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <EditText
-                android:id="@+id/course_end_date_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/course_editor_end_date_hint"
-                android:importantForAutofill="no"
-                android:inputType="date" />
+        <EditText
+            android:id="@+id/course_end_date_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:hint="@string/course_editor_end_date_hint"
+            android:importantForAutofill="no"
+            android:inputType="date"
+            app:layout_constraintBottom_toTopOf="@+id/course_status_spinner_input"
+            app:layout_constraintEnd_toStartOf="@+id/course_end_date_fab"
+            app:layout_constraintStart_toEndOf="@+id/course_end_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/course_start_date_input" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/course_end_date_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                app:backgroundTint="#FFFFFF"
-                app:fabSize="mini"
-                app:srcCompat="@drawable/ic_calendar" />
-        </TableRow>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/course_end_date_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="8dp"
+            android:clickable="true"
+            app:backgroundTint="#FFFFFF"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@+id/course_status_spinner_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/course_end_date_input"
+            app:layout_constraintTop_toBottomOf="@id/course_start_date_fab"
+            app:srcCompat="@drawable/ic_calendar" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="10dp">
 
-            <TextView
-                android:id="@+id/course_status_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="@string/course_editor_status_label" />
+        <TextView
+            android:id="@+id/course_status_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/course_editor_status_label"
+            app:layout_constraintEnd_toStartOf="@+id/course_status_spinner_input"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/course_status_spinner_input" />
 
-            <Spinner
-                android:id="@+id/course_status_spinner_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <Spinner
+            android:id="@+id/course_status_spinner_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/course_term_spinner_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/course_status_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/course_end_date_input" />
 
-        </TableRow>
-    </TableLayout>
+
+        <TextView
+            android:id="@+id/course_term_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/course_editor_term_label"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/course_term_spinner_input"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/course_status_text_view" />
+
+        <Spinner
+            android:id="@+id/course_term_spinner_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/course_term_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/course_status_spinner_input" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
