@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -194,12 +195,16 @@ public class TermDetailActivity extends AppCompatActivity {
         builder.setTitle(R.string.term_editor_cancel_title);
         builder.setMessage(R.string.term_editor_cancel_message);
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setPositiveButton(getString(R.string.term_editor_cancel_yes_button), (dialog, id) -> {
-            dialog.dismiss();
-            super.onBackPressed();
+        builder.setPositiveButton(
+                getString(R.string.term_editor_cancel_yes_button),
+                (dialog, id) -> {
+                    dialog.dismiss();
+                    super.onBackPressed();
         });
-        builder.setNegativeButton(getString(R.string.term_editor_cancel_no), (dialog, id) -> {
-            dialog.dismiss();
+        builder.setNegativeButton(
+                getString(R.string.term_editor_cancel_no),
+                (dialog, id) -> {
+                    dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -208,7 +213,7 @@ public class TermDetailActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_editor, menu);
+        getMenuInflater().inflate(R.menu.menu_term_editor, menu);
         return true;
     }
 
@@ -226,15 +231,21 @@ public class TermDetailActivity extends AppCompatActivity {
         } else if (id == R.id.action_delete) {
             handleDelete();
             return true;
+        } else if (id == R.id.action_remove_all_courses) {
+            handleRemoveAll();
         }
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     public boolean onPrepareOptionsMenu (Menu menu) {
         if (newTerm) {
-            MenuItem item = menu.findItem(R.id.action_delete);
-            item.setEnabled(false);
+            MenuItem menuItemDelete = menu.findItem(R.id.action_delete);
+            menuItemDelete.setEnabled(false);
+            MenuItem menuItemRemoveAll = menu.findItem(R.id.action_remove_all_courses);
+            menuItemRemoveAll.setEnabled(false);
         }
         return true;
     }
@@ -247,6 +258,7 @@ public class TermDetailActivity extends AppCompatActivity {
         } catch (ParseException e) {
             Log.e(TAG, "saveAndReturn: "+ e.getLocalizedMessage());
         }
+        popNotificationToast(getString(R.string.term_editor_notification_saved));
         finish();
     }
 
@@ -255,24 +267,47 @@ public class TermDetailActivity extends AppCompatActivity {
         Context context = MainActivity.getContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setTitle(context.getString(R.string.term_editor_delete_title, termTitle));
+        if (courseData.size() > 0) {
+            builder.setTitle(R.string.term_editor_delete_title_has_course);
+            builder.setMessage(getString(R.string.term_editor_delete_message_has_courses));
+            builder.setPositiveButton(
+                    R.string.term_editor_delete_positive_button_has_course,
+                    (dialog, id) -> {
+                        dialog.dismiss();
+            });
+        } else {
+            builder.setTitle(context.getString(R.string.term_editor_delete_title, termTitle));
+            builder.setMessage(context.getString(
+                    R.string.term_editor_delete_message_no_courses,
+                    termTitle)
+            );
+            builder.setPositiveButton(
+                    R.string.term_editor_delete_positive_button_no_course,
+                    (dialog, id) -> {
+                        dialog.dismiss();
+                        viewModel.deleteTerm();
+                        popNotificationToast(
+                                getString(R.string.term_editor_notification_delete, termTitle)
+                        );
+                        finish();
+            });
+            builder.setNegativeButton(
+                    R.string.term_editor_delete_negative_button_no_course,
+                    (dialog, id) -> {
+                        dialog.dismiss();
+            });
+        }
 
-        builder.setMessage(context.getString(
-                R.string.term_editor_delete_message_no_courses,
-                termTitle)
-        );
 
-        builder.setPositiveButton("Yes", (dialog, id) -> {
-            dialog.dismiss();
-            viewModel.deleteTerm();
-            finish();
-        });
-
-        builder.setNegativeButton("Cancel", (dialog, id) -> {
-            dialog.dismiss();
-        });
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
+    private void handleRemoveAll() {
+        viewModel.removeAllAssignedCourses();
+    }
+
+    private void popNotificationToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 }

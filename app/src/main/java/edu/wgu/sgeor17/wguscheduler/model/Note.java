@@ -66,11 +66,6 @@ public class Note {
 
     @Override
     public String toString() {
-        return "Note{" +
-                "id=" + id +
-                ", created=" + created +
-                ", text='" + text + '\'' +
-                ", courseID=" + courseID +
-                '}';
+        return "Note id:" + id;
     }
 }

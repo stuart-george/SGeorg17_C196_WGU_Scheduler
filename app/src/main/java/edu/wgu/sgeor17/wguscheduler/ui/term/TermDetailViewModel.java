@@ -41,7 +41,7 @@ public class TermDetailViewModel extends AndroidViewModel {
         return termData;
     }
 
-    public LiveData<List<Course>> getCourseData() {return liveCourses;};
+    public LiveData<List<Course>> getCourseData() {return liveCourses;}
 
     public void saveTerm (String title, Date startDate, Date endDate) {
         Term term = termData.getValue();
@@ -60,5 +60,9 @@ public class TermDetailViewModel extends AndroidViewModel {
 
     public void deleteTerm () {
         repository.deleteTerm(termData.getValue());
+    }
+
+    public void removeAllAssignedCourses() {
+        repository.unAssignCoursesForTerm(termData.getValue().getId());
     }
 }

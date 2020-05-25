@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import edu.wgu.sgeor17.wguscheduler.R;
 import edu.wgu.sgeor17.wguscheduler.utility.Constants;
@@ -107,14 +108,14 @@ public class NoteDetailActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.course_editor_cancel_title);
-        builder.setMessage(R.string.course_editor_cancel_message);
+        builder.setTitle(R.string.note_editor_cancel_title);
+        builder.setMessage(R.string.note_editor_cancel_message);
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setPositiveButton(getString(R.string.course_editor_cancel_yes), (dialog, id) -> {
+        builder.setPositiveButton(getString(R.string.note_editor_cancel_yes), (dialog, id) -> {
             dialog.dismiss();
             super.onBackPressed();
         });
-        builder.setNegativeButton(getString(R.string.course_editor_cancel_no), (dialog, id) -> {
+        builder.setNegativeButton(getString(R.string.note_editor_cancel_no), (dialog, id) -> {
             dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
@@ -157,10 +158,36 @@ public class NoteDetailActivity extends AppCompatActivity {
 
     private void saveAndReturn() {
         viewModel.saveNote(noteInput.getText().toString(), courseID);
+        popNotificationToast(getString(R.string.note_editor_notification_save));
         finish();
     }
 
     private void handleDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setTitle(getString(R.string.note_editor_delete_title));
+        builder.setMessage(getString(R.string.note_editor_delete_message));
+        builder.setPositiveButton(
+                getString(R.string.note_editor_delete_yes),
+                (dialog, id) -> {
+                    viewModel.deleteNote();
+                    dialog.dismiss();
+                    popNotificationToast(getString(R.string.note_editor_notification_delete));
+                    finish();
+                }
+        );
+        builder.setNegativeButton(
+                getString(R.string.note_editor_delete_no),
+                (dialog, id) -> {
+                    dialog.dismiss();
+                }
+        );
 
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void popNotificationToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

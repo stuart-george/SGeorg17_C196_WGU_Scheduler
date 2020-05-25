@@ -81,4 +81,9 @@ public class Assessment {
     public void setCourseID(int courseID) {
         this.courseID = courseID;
     }
+
+    @Override
+    public String toString() {
+        return "Assessment:" + title;
+    }
 }
