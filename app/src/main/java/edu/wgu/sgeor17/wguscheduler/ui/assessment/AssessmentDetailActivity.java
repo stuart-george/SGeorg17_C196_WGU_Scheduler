@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -216,14 +217,14 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.course_editor_cancel_title);
-        builder.setMessage(R.string.course_editor_cancel_message);
+        builder.setTitle(R.string.assessment_editor_cancel_title);
+        builder.setMessage(R.string.assessment_editor_cancel_message);
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setPositiveButton(getString(R.string.course_editor_cancel_yes), (dialog, id) -> {
+        builder.setPositiveButton(getString(R.string.assessment_editor_cancel_yes), (dialog, id) -> {
             dialog.dismiss();
             super.onBackPressed();
         });
-        builder.setNegativeButton(getString(R.string.course_editor_cancel_no), (dialog, id) -> {
+        builder.setNegativeButton(getString(R.string.assessment_editor_cancel_no), (dialog, id) -> {
             dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
@@ -260,20 +261,20 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setTitle(context.getString(R.string.course_editor_delete_title, assessmentTitle));
+        builder.setTitle(context.getString(R.string.assessment_editor_delete_title, assessmentTitle));
 
         builder.setMessage(context.getString(
-                R.string.course_editor_delete_message_no_associated_objects,
-                assessmentTitle)
+                R.string.assessment_editor_delete_message)
         );
 
-        builder.setPositiveButton(R.string.course_editor_delete_yes, (dialog, id) -> {
+        builder.setPositiveButton(R.string.assessment_editor_delete_yes, (dialog, id) -> {
             dialog.dismiss();
             viewModel.deleteAssessment();
+            popToastNotification(getString(R.string.assessment_editor_notification_delete));
             finish();
         });
 
-        builder.setNegativeButton(R.string.course_editor_delete_no, (dialog, id) -> {
+        builder.setNegativeButton(R.string.assessment_editor_delete_no, (dialog, id) -> {
             dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
@@ -295,6 +296,7 @@ public class AssessmentDetailActivity extends AppCompatActivity {
             if(assessmentDate.after(today) || assessmentDate.equals(today)) {
                 scheduleNotification(assessmentDate);
             }
+            popToastNotification(getString(R.string.assessment_editor_notification_saved));
         } catch (ParseException e) {
             Log.e(TAG, "saveAndReturn: "+ e.getLocalizedMessage());
         }
@@ -334,6 +336,10 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         assert alarmManager != null;
         alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
 
+    }
+
+    private void popToastNotification(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private Date getTodayDate() {

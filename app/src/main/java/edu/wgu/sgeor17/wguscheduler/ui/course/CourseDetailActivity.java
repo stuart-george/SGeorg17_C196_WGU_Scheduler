@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -141,9 +142,9 @@ public class CourseDetailActivity extends AppCompatActivity {
 
         initRecyclerView();
         setButtonOnClick();
-        enableAddButtons();
         addSpinnerItems();
         initViewModel();
+        enableAddButtons();
 
     }
 
@@ -502,22 +503,47 @@ public class CourseDetailActivity extends AppCompatActivity {
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setTitle(context.getString(R.string.course_editor_delete_title, courseTitle));
 
-        builder.setMessage(context.getString(
-                R.string.course_editor_delete_message_no_associated_objects,
-                courseTitle)
-        );
-
-        builder.setPositiveButton(R.string.course_editor_delete_yes, (dialog, id) -> {
-            dialog.dismiss();
-            viewModel.deleteCourse();
-            finish();
-        });
+        if(noteData.size()>0 || assessmentData.size()>0 || mentorData.size()>0) {
+            builder.setMessage(context.getString(
+                    R.string.course_editor_delete_message_has_associated_objects,
+                    courseTitle)
+            );
+            builder.setPositiveButton(R.string.course_editor_delete_yes, (dialog, id) -> {
+                dialog.dismiss();
+                viewModel.deleteCourse();
+                viewModel.deleteAllCourseNotes();
+                viewModel.deleteAllCourseMentors();
+                viewModel.unAssignAllAssessments();
+                popToastNotification(getString(R.string.course_editor_notification_delete_associate_objects));
+                finish();
+            });
+        } else {
+            builder.setMessage(context.getString(
+                    R.string.course_editor_delete_message_no_associated_objects,
+                    courseTitle)
+            );
+            builder.setPositiveButton(R.string.course_editor_delete_yes, (dialog, id) -> {
+                dialog.dismiss();
+                viewModel.deleteCourse();
+                popToastNotification(getString(R.string.course_editor_notification_delete_no_associated));
+                finish();
+            });
+        }
 
         builder.setNegativeButton(R.string.course_editor_delete_no, (dialog, id) -> {
             dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+        if (newCourse) {
+            MenuItem item = menu.findItem(R.id.action_delete);
+            item.setEnabled(false);
+        }
+        return true;
     }
 
     private void saveAndReturn() {
@@ -532,6 +558,8 @@ public class CourseDetailActivity extends AppCompatActivity {
                     getSpinnerValue(),
                     getTermSpinnerValue().getId());
 
+
+
             //Logic checks against current date in order to prevent unnecessary alerts for past dates.
             if(startDate.after(today) || startDate.equals(today)) {
                 scheduleNotification(NotificationType.START, startDate);
@@ -541,7 +569,7 @@ public class CourseDetailActivity extends AppCompatActivity {
                 scheduleNotification(NotificationType.END, endDate);
             }
 
-
+            popToastNotification(getString(R.string.course_editor_notification_saved));
         } catch (ParseException e) {
             Log.e(TAG, "saveAndReturn: "+ e.getLocalizedMessage());
         }
@@ -599,6 +627,10 @@ public class CourseDetailActivity extends AppCompatActivity {
             assert alarmManager != null;
             alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
 
+    }
+
+    private void popToastNotification(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private Date getTodayDate() {

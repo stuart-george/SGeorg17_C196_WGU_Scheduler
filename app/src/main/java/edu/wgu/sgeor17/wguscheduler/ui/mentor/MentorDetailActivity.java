@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -175,11 +176,11 @@ public class MentorDetailActivity extends AppCompatActivity {
         builder.setTitle(R.string.mentor_editor_cancel_title);
         builder.setMessage(R.string.mentor_editor_cancel_message);
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setPositiveButton(getString(R.string.course_editor_cancel_yes), (dialog, id) -> {
+        builder.setPositiveButton(getString(R.string.mentor_editor_cancel_yes), (dialog, id) -> {
             dialog.dismiss();
             super.onBackPressed();
         });
-        builder.setNegativeButton(getString(R.string.course_editor_cancel_no), (dialog, id) -> dialog.dismiss());
+        builder.setNegativeButton(getString(R.string.mentor_editor_cancel_no), (dialog, id) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -234,6 +235,7 @@ public class MentorDetailActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.mentor_editor_delete_yes, (dialog, id) -> {
             dialog.dismiss();
             viewModel.deleteMentor();
+            popNotificationToast(getString(R.string.mentor_editor_notification_delete, mentorName));
             finish();
         });
 
@@ -249,7 +251,13 @@ public class MentorDetailActivity extends AppCompatActivity {
                 emailInput.getText().toString(),
                 phoneInput.getText().toString(),
                 getCourseSpinnerValue().getId());
+        popNotificationToast(getString(
+                R.string.mentor_editor_notification_saved,
+                firstNameInput.getText().toString()));
         finish();
     }
 
+    private void popNotificationToast (String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 }

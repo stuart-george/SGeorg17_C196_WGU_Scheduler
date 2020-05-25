@@ -92,4 +92,9 @@ public class Mentor {
     public void setCourseID(int courseID) {
         this.courseID = courseID;
     }
+
+    @Override
+    public String toString() {
+        return firstName + " " + lastName;
+    }
 }
